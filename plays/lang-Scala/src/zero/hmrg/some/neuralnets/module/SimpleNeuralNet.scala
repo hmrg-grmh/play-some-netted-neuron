@@ -22,6 +22,12 @@ list weights:
     ...
 */
 
+/**
+ * make a simple neural-net from zero
+ * use only one file
+ * use only basic feature in Scala-lang
+ * I want the code as easy as possible for read, means I want it as little ambiguity as possible
+ */
 case class SimpleNeuralNet
 ( weightLineBiaListSeq: Seq[(Int,List[(Int,(List[(Int,Double)],Double))])] )
 object SimpleNeuralNet
