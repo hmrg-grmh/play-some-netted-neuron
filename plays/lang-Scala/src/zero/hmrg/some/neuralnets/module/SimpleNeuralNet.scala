@@ -1,4 +1,4 @@
-package zero.hmrg.some.neuralnets.module
+package zero.hmrg.some.neuralnets.module ;
 
 /*
 seq net(same as layers):
@@ -26,15 +26,19 @@ list weights:
 
 /**
  * make a simple neural-net from zero
- * use only one file
+ * use only one file, may the code can be compressed by simple way
  * use only basic feature in Scala-lang
  * I want the code as easy as possible for read, means should be less ambiguity
  * and much readable by format even without IDE
+ * I do not like the conceptions be made for only one domain
+ * language and words only can be alive when it be used frequently
+ * and only the simple less-rule one can deserved to be used frequently
+ * so I will only use the visualized words to make names
  */
 
 case class SimpleNeuralNet
 ( weightLineBiaListSeq: Seq[(Int,List[(Int,(List[(Int,Double)],Double))])] )
-{  }
+{  } ; 
 
 object SimpleNeuralNet
 {
@@ -160,4 +164,4 @@ object SimpleNeuralNet
                     ) ;
         } ;
     } ;
-}
+} ;
