@@ -38,10 +38,13 @@ list weights:
 
 case class SimpleNeuralNet
 ( weightLineBiaListSeq: Seq[(Int,List[(Int,(List[(Int,Double)],Double))])] )
-{  } ; 
+extends SimpleNeuralNet.NeuralNet
+{  } ;
 
-object SimpleNeuralNet
+object SimpleNeuralNet extends SimpleNeuralNet.NeuralNet
 {
+    trait NeuralNet ;
+    
     object Maker
     {
         /**
@@ -164,4 +167,42 @@ object SimpleNeuralNet
                     ) ;
         } ;
     } ;
+    
+    
+    object Module 
+    {
+        /* module to do sth - actively */
+        object Acts
+        {
+            def invokeModule () =
+            {
+                return
+            } ;
+            
+            def importModule () =
+            {
+                return
+            } ;
+            
+            def exportModule () =
+            {
+                return
+            } ;
+        } ;
+        
+        
+        /* module be do sth - passively */
+        object Iter
+        {
+            def geneticEvaluationIterator (module: SimpleNeuralNet.NeuralNet) = 
+            {
+                return
+            } ;
+        } ;
+        
+    } ;
+    
+    
+    
+    
 } ;
