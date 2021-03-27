@@ -128,6 +128,9 @@ object SimpleNeuralNet
     
     object SomeGift
     {
+        /**
+         * use to make the neuron-num always be some positive number
+         */
         def relu (n:Double)
         : Double =
         {
