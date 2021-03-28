@@ -54,12 +54,12 @@ object SimpleNeuralNet extends SimpleNeuralNet.NeuralNet
          */
         object Mode
         {
-            trait NetMakeMode ;
-            object RANDOM extends NetMakeMode ;
-            object ZERO extends NetMakeMode ;
+            trait SomeMakeMode ;
+            object RANDOM extends SomeMakeMode ;
+            object ZERO extends SomeMakeMode ;
         } ;
         def makeNet
-        ( modeChoose: Mode.NetMakeMode = Mode.RANDOM )
+        ( modeChoose: Mode.SomeMakeMode = Mode.RANDOM )
         ( sizeLineIn:Int, sizeLineOut:Int, sizesForHiddenLayer:Seq[Int] )
         : SimpleNeuralNet =
         {
@@ -169,22 +169,22 @@ object SimpleNeuralNet extends SimpleNeuralNet.NeuralNet
     } ;
     
     
-    object Module 
+    object Model
     {
         /* module to do sth - actively */
         object Acts
         {
-            def invokeModule () =
+            def invokeModel () =
             {
                 return
             } ;
             
-            def importModule () =
+            def importModel () =
             {
                 return
             } ;
             
-            def exportModule () =
+            def exportModel () =
             {
                 return
             } ;
@@ -194,7 +194,7 @@ object SimpleNeuralNet extends SimpleNeuralNet.NeuralNet
         /* module be do sth - passively */
         object Iter
         {
-            def geneticEvaluationIterator (module: SimpleNeuralNet.NeuralNet) = 
+            def geneticEvaluationIterator (module: SimpleNeuralNet.NeuralNet) =
             {
                 return
             } ;
