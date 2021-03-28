@@ -1,4 +1,4 @@
-package zero.hmrg.some.neuralnets.module ;
+package zero.hmrg.some.neuralnets.model ;
 
 /*
 seq net(same as layers):
@@ -171,7 +171,7 @@ object SimpleNeuralNet extends SimpleNeuralNet.NeuralNet
     
     object Model
     {
-        /* module to do sth - actively */
+        /* model to do sth - actively */
         object Acts
         {
             def invokeModel () =
@@ -191,7 +191,7 @@ object SimpleNeuralNet extends SimpleNeuralNet.NeuralNet
         } ;
         
         
-        /* module be do sth - passively */
+        /* model be do sth - passively */
         object Iter
         {
             def geneticEvaluationIterator (module: SimpleNeuralNet.NeuralNet) =
