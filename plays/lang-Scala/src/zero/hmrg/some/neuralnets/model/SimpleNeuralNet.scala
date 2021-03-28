@@ -38,12 +38,17 @@ list weights:
 
 case class SimpleNeuralNet
 ( weightLineBiaListSeq: Seq[(Int,List[(Int,(List[(Int,Double)],Double))])] )
-extends SimpleNeuralNet.NeuralNet
+extends types.NeuralNet
 {  } ;
 
-object SimpleNeuralNet extends SimpleNeuralNet.NeuralNet
+package object types
 {
     trait NeuralNet ;
+} ;
+
+object SimpleNeuralNet
+extends types.NeuralNet
+{
     
     object Maker
     {
@@ -172,7 +177,7 @@ object SimpleNeuralNet extends SimpleNeuralNet.NeuralNet
     object Model
     {
         /* model to do sth - actively */
-        object Acts
+        object Action
         {
             def invokeModel () =
             {
@@ -192,16 +197,44 @@ object SimpleNeuralNet extends SimpleNeuralNet.NeuralNet
         
         
         /* model be do sth - passively */
-        object Iter
+        object Evolution
         {
-            def geneticEvaluationIterator (module: SimpleNeuralNet.NeuralNet) =
+            def evolve (module: types.NeuralNet) =
+            {
+                return
+            } ;
+            def revolute (module: types.NeuralNet) =
             {
                 return
             } ;
         } ;
         
+        
     } ;
     
+    
+    object Environment
+    {
+        case class TabledData
+        ( head:Array[String] , body:List[Array[String]] ) ;
+        
+        def csvReader (path: String)
+        : Environment.TabledData =
+        {
+            val csvFile
+            : scala.io.BufferedSource =
+                scala.io.Source.fromFile(path) ;
+            
+            val csvLineList
+            : List[Array[String]] =
+                csvFile.getLines().toList.map( line => line.split(",") ) ;
+            
+            csvFile.close() ;
+            
+            return TabledData( csvLineList.head, csvLineList.tail ) ;
+        } ;
+        
+    } ;
     
     
     
