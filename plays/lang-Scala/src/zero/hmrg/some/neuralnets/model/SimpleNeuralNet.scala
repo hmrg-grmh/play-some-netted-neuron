@@ -59,12 +59,12 @@ extends types.NeuralNet
          */
         object Mode
         {
-            trait SomeMakeMode ;
-            object RANDOM extends SomeMakeMode ;
-            object ZERO extends SomeMakeMode ;
+            trait SomeMakingMode ;
+            object RANDOM extends SomeMakingMode ;
+            object ZERO extends SomeMakingMode ;
         } ;
         def makeNet
-        ( modeChoose: Mode.SomeMakeMode = Mode.RANDOM )
+        ( modeChoose: Mode.SomeMakingMode = Mode.RANDOM )
         ( sizeLineIn:Int, sizeLineOut:Int, sizesForHiddenLayer:Seq[Int] )
         : SimpleNeuralNet =
         {
@@ -181,17 +181,17 @@ extends types.NeuralNet
         {
             def invokeModel () =
             {
-                return
+                //return
             } ;
             
             def importModel () =
             {
-                return
+                //return
             } ;
             
             def exportModel () =
             {
-                return
+                //return
             } ;
         } ;
         
@@ -201,11 +201,11 @@ extends types.NeuralNet
         {
             def evolve (module: types.NeuralNet) =
             {
-                return
+                //return
             } ;
             def revolute (module: types.NeuralNet) =
             {
-                return
+                //return
             } ;
         } ;
         
