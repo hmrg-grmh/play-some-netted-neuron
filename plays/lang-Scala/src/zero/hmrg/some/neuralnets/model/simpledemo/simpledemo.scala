@@ -30,7 +30,7 @@ package object simpledemo
     {
         trait NeuralNet ;
         trait InOutLine ;
-    } ;
+    } ; /* : object Type : */
     
     /**
      * make a simple neural-net from zero
@@ -42,11 +42,19 @@ package object simpledemo
      * language and words only can be alive when it be used frequently
      * and only the simple less-rule one can deserved to be used frequently
      * so I will only use the visualized words to make names
+     * ---------------------------------
+     * /* :xxx XXX: */ :
+     *    means The xxx XXX is OVER HERE , it is OVER .
+     *    means The xxx XXX " YiJing JieShu Le, BuYao HuanXiang Le " .
      */
     case class SimpleNeuralNet
-    ( weightLineBiaListSeq: Seq[(Int,List[(Int,(List[(Int,Double)],Double))])] )
+    ( weightLineBiasedListSeq: Seq[(Int,List[(Int,(List[(Int,Double)],Double))])] )
+    ( sizeIn:Int, sizeOut:Int )
         extends Type.NeuralNet
-    {  } ;
+    {
+        lazy val getNumberOfHiddenLayer
+        : Int = weightLineBiasedListSeq.size - 1
+    } ; /* :case class SimpleNeuralNet: */
     object SimpleNeuralNet
         extends Type.NeuralNet
     {
@@ -58,12 +66,14 @@ package object simpledemo
              * one layer is : many lines
              * one net is : many layers
              */
+            
             object Mode
             {
                 trait SomeMakingMode ;
                 object RANDOM extends SomeMakingMode ;
                 object ZERO extends SomeMakingMode ;
-            } ;
+            } ; /* :object Mode: */
+            
             def makeNet
             ( modeChoose: Mode.SomeMakingMode = Mode.RANDOM )
             ( sizeLineIn:Int, sizeLineOut:Int, sizesForHiddenLayer:Seq[Int] )
@@ -76,15 +86,15 @@ package object simpledemo
                 : Int = sizesForLayer.size ;
                 
                 val sizeOfLines
-                : Seq[(Int,Int)] = 
-                    (1 to sizeForNet) zip 
+                : Seq[(Int,Int)] =
+                    (1 to sizeForNet) zip
                     (List(sizeLineIn) ::: sizesForHiddenLayer.toList) ;
                 
                 def getLineSizeForLayer (indexOfLayer:Int)
                 : Int =
                 {
                     return sizeOfLines.toMap.get(indexOfLayer)getOrElse(-1) ;
-                } ;
+                } ; /* :def getLineSizeForLayer: */
                 
                 def makeRandomLineBia (sizeOfLine:Int)
                 : (List[(Int, Double)], Double) =
@@ -94,15 +104,15 @@ package object simpledemo
                         (1 to sizeOfLine)
                             .toList
                             .map(
-                                indexInLine => 
-                                    indexInLine -> 
+                                indexInLine =>
+                                    indexInLine ->
                                     scala.util.Random.nextDouble
                                 ) ;
                     return indexedLine ->
                            ( scala.util.Random.nextDouble +
                              scala.util.Random.nextInt(32) - 16 -
                              scala.util.Random.nextDouble ) ;
-                } ;
+                } ; /* :def makeRandomLineBia: */
                 
                 def makeZeroLineBia (sizeOfLine:Int)
                 : (List[(Int, Double)], Double) =
@@ -113,7 +123,7 @@ package object simpledemo
                             .toList
                             .map( indexInLine => indexInLine -> 0.0 ) ;
                     return indexedLine -> 0.0 ;
-                } ;
+                } ; /* :def makeZeroLineBia: */
                 
                 val makeLineBia
                 : (Int) => (List[(Int, Double)], Double) =
@@ -121,7 +131,7 @@ package object simpledemo
                     {
                         case Mode.RANDOM => makeRandomLineBia _
                         case _ | Mode.ZERO => makeZeroLineBia _
-                    } ;
+                    } ; /* :val makeLineBia: */
                 
                 val netDataMade
                 : Seq[(Int,List[(Int,(List[(Int,Double)],Double))])] =
@@ -140,10 +150,14 @@ package object simpledemo
                                             makeLineBia(getLineSizeForLayer(indexOfLayer))
                                         )
                             /* here need to be: one index -> one layer */
-                        } ;
-                return apply(netDataMade) ;
-            } ;
-        } ;
+                        } ; /* :val netDataMade: */
+                return SimpleNeuralNet
+                    .apply(
+                        netDataMade)(
+                        sizeIn = sizeLineIn,
+                        sizeOut = sizeLineOut) ;
+            } ; /* :def makeNet: */
+        } ; /* :object SimpleNeuralNet: */
         
         object SomeGift
         {
@@ -154,19 +168,19 @@ package object simpledemo
             : Double =
             {
                 return if (n < 0) 0 else n ;
-            } ;
-        } ;
+            } ; /* :def relu: */
+        } ; /* :object SomeGift: */
         
         object Operator
         {
-            def multiplyListElems 
+            def multiplyListElems
             ( a:List[Double], b:List[Double] )
             : List[Double] =
             {
                 return (a.map(Some(_)) zip b.map(Some(_)))
                     .map{ case (Some(a),Some(b)) => a * b } ;
-            } ;
-            def getNextLayerNeuronList 
+            } ; /* : def multiplyListElems : */
+            def getNextLayerNeuronList
             ( neuronList:List[Double], neuralJunctionGroupList:List[List[Double]] )
             : List[Double] =
             {
@@ -179,15 +193,15 @@ package object simpledemo
                         neuralJunctionGroup =>
                             multiplyListElems(neuralJunctionGroup, neuronList).sum
                         ) ;
-            } ;
-        } ;
+            } ; /* :def getNextLayerNeuronList: */
+        } ; /* :object Operator: */
         
         
         object Model
         {
             case class ModelGroup
             ( modelList:List[(Int,Type.NeuralNet)] )
-            {  } ;
+            {  } ; /* :case class ModelGroup: */
             object ModelGroup
             {
                 def groupMaker
@@ -209,12 +223,13 @@ package object simpledemo
                                         sizesForHiddenLayer)
                                 ) ;
                     return ModelGroup.apply(modelListGot) ;
-                } ;
-            } ;
+                } ; /* :def groupMaker: */
+            } ; /* :object ModelGroup: */
             
             /* model to do sth - actively */
             object Action
             {
+                
                 class OutData extends Type.InOutLine ;
                 class InData extends Type.InOutLine ;
                 case class OutLine
@@ -233,18 +248,79 @@ package object simpledemo
                     extends Type.InOutLine
                 {
                     //
-                } ;
+                } ; /* :case object Line: */
+                
                 
                 /* only way to use ModelGroup in normal or in training */
-                /* return : 
-                     List of resArray(OutLine) with cost, 
-                     for everyone(have-index) in the group(List) */
+                /**
+                 * return :
+                 *    List of resArray(OutLine) with cost,
+                 *    for everyone(have-index) in the group(List)
+                 */
                 def invokeModel
-                ( groupedModels:ModelGroup , environmentEvolveIn:Environment.Data )
-                //: List[(Int,(Cost,OutLine))] =
+                ( groupedModels:ModelGroup , environmentEvolveIn:Environment.TabledData )
+                : List[(Int,(Cost,OutLine))] =
                 {
-                    //return
-                } ;
+                    
+                    val envTableBody = environmentEvolveIn.body ;
+                    
+                    def oneNetOneEventCostedResultGetter
+                    ( model:SimpleNeuralNet  )
+                    : (Cost,OutLine) =
+                    {
+                        
+                        def dataLineOnOneWBLineResultGetter
+                        ( wbLine: (List[(Int,Double)],Double) )
+                        ( dataIn: InLine )
+                        : Double =
+                        {
+                            val bias : Double = wbLine._2 ;
+                            val weightLine : List[(Int,Double)] = wbLine._1 ;
+                            
+                            val dataLineMultipliedWeightLine
+                            : List[((Int, Double), Int)] =
+                                (dataIn.data.toList.zipWithIndex zip weightLine)
+                                    .map
+                                    {
+                                        case ((dataValue,dataIndex),(indexOfWeight,weight)) =>
+                                            (indexOfWeight -> dataValue.*(weight)) ->
+                                            (indexOfWeight - 1 - dataIndex)
+                                    } ; /* :val dataLineMultipliedWeightLine: */
+                            
+                            val preResultGot
+                            : Double =
+                                dataLineMultipliedWeightLine
+                                    .filter(_._2 == 0)
+                                    .map
+                                    {
+                                        case ((indexOfWeight,valueMultipliedWeight),verifiedCode) =>
+                                            valueMultipliedWeight
+                                    } /* here index is not important , because then will be sum */
+                                    .sum
+                                    .+(bias) ; /* :val preResultGot: */
+                            
+                            return SomeGift.relu(preResultGot) ;
+                        } ; /* :def dataLineOnOneWBLineResultGetter: */
+                        
+                        
+                        model
+                            .weightLineBiasedListSeq
+                            .map
+                            {
+                                case (indexOfLayer,weightLineBiasedList) =>
+                                    indexOfLayer ->
+                                    weightLineBiasedList
+                                        .map
+                                        {
+                                            case (indexOfLine,weightLineBiased) =>
+                                                indexOfLine ->
+                                                weightLineBiased
+                                        }
+                            }
+                    } ;
+                    groupedModels.modelList
+                    return
+                } ; /* :def invokeModel: */
                 /* way to output ModelGroup */
                 def importModel (srcFilePath:String) =
                 {
@@ -255,7 +331,7 @@ package object simpledemo
                 {
                     //return
                 } ;
-            } ;
+            } ; /* :object Action: */
             
             /* model be do sth - passively */
             object Evolution
@@ -282,7 +358,7 @@ package object simpledemo
             } ;
             
             
-        } ;
+        } ; /* :object Model: */
         
         
         object Environment
@@ -294,6 +370,46 @@ package object simpledemo
                 extends Data
             {  } ;
             
+            case class Event
+            ( eventFeatureData: Array[Double] , eventLabelData: Array[Double])
+                extends Type.InOutLine
+            {  } ;
+            object Event
+            {
+                
+                def eventListMaker
+                ( byTabledDataFeature: TabledData, byOutTabledDataLabel: TabledData )
+                : List[(Array[Double], Array[Double])] =
+                {
+                    
+                    def oneLineStringToDouble
+                    ( fields: Array[String] )
+                    : Array[Double] =
+                        fields.map(_.toDouble) ;
+                    
+                    val eventListGot
+                    : List[(Array[Double], Array[Double])] =
+                        (byTabledDataFeature.body.zipWithIndex zip byOutTabledDataLabel.body.zipWithIndex )
+                            .toList
+                            .map
+                            {
+                                case ((oneLineFeature,featureIndex),(oneLineLabel,labelIndex)) =>
+                                    oneLineStringToDouble(oneLineFeature) ->
+                                    oneLineStringToDouble(oneLineLabel) ->
+                                    (featureIndex - labelIndex)
+                            }
+                            .filter(_._2 == 0)
+                            .map
+                            {
+                                case (eventFeatureWithLabelVerified,verifyCode) =>
+                                    eventFeatureWithLabelVerified
+                            } ; /* :val eventList: */
+                    
+                    return eventListGot ;
+                } ; /* :def eventListMaker: */
+                
+            } ;
+            
             def csvReader (path: String)
             : Environment.TabledData =
             {
@@ -301,9 +417,17 @@ package object simpledemo
                 : scala.io.BufferedSource =
                     scala.io.Source.fromFile(path) ;
                 
+                import sys.process._ ;
                 val csvLineList
                 : List[Array[String]] =
-                    csvFile.getLines().toList.map( line => line.split(",") ) ;
+                    csvFile
+                        .getLines()
+                        .toList
+                        .map(
+                            line =>
+                                line.split(",")
+                                    .map( field => s"echo -e ${field}".!! )
+                            ) ;
                 
                 csvFile.close() ;
                 
