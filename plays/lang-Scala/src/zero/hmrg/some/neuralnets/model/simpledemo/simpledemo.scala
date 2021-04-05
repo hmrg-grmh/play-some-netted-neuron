@@ -1,7 +1,4 @@
-package zero.hmrg.some.neuralnets.model
-
-import scala.annotation.tailrec
-import scala.collection.immutable;
+package zero.hmrg.some.neuralnets.model ;
 
 /*
 seq net(same as layers):
@@ -58,15 +55,16 @@ package object simpledemo
         lazy val getNumberOfHiddenLayer
         : Int = weightLineBiasedListSeq.size - 1
     } ; /* :case class SimpleNeuralNet: */
+    
+    /**
+     * one line is : many weights -- 1 bia
+     * one layer is : many lines
+     * one net is : many layers
+     */
     object SimpleNeuralNet
         extends Type.NeuralNet
     {
         
-        /**
-         * one line is : many weights -- 1 bia
-         * one layer is : many lines
-         * one net is : many layers
-         */
         case class WBLine
         (data:(List[(Int,Double)],Double))
         {  } ;
@@ -104,7 +102,7 @@ package object simpledemo
                     model
                         .weightLineBiasedListSeq
                         .toMap
-                        .getOrElse( indexOfLayer , List(-1 -> WBLine.errorWBLineMaker) )
+                        .getOrElse(indexOfLayer,List(-1 -> WBLine.errorWBLineMaker))
                         .toMap
                         .size ;
                 return sizeOfNet - 1 ;
@@ -142,29 +140,28 @@ package object simpledemo
                     return sizeOfLines.toMap.get(indexOfLayer).getOrElse(-1) ;
                 } ; /* :def getLineSizeForLayer: */
                 
-                def makeRandomLineBia (sizeOfLine:Int)
+                def makeRandomWBLine (sizeOfLine:Int)
                 : WBLine =
                 {
                     val indexedLine
                     : List[(Int, Double)] =
                         (1 to sizeOfLine)
                             .toList
-                            .map( indexInLine =>
-                                  {
-                                      indexInLine -> scala
-                                          .util
-                                          .Random
-                                          .nextDouble
-                                  } ) ;
-                    return WBLine.apply(
-                        indexedLine ->
-                        (
-                        scala.util.Random.nextDouble +
-                        scala.util.Random.nextInt(32) - 16 -
-                        scala.util.Random.nextDouble ) ) ;
-                } ; /* :def makeRandomLineBia: */
+                            .map(
+                                indexInLine =>
+                                    indexInLine ->
+                                    scala.util.Random.nextDouble
+                                ) ;
+                    return WBLine
+                        .apply(
+                            indexedLine ->
+                            (
+                            scala.util.Random.nextDouble +
+                            scala.util.Random.nextInt(32) - 16 -
+                            scala.util.Random.nextDouble ) ) ;
+                } ; /* :def makeRandomWBLine: */
                 
-                def makeZeroLineBia (sizeOfLine:Int)
+                def makeZeroWBLine (sizeOfLine:Int)
                 : WBLine =
                 {
                     val indexedLine
@@ -173,15 +170,15 @@ package object simpledemo
                             .toList
                             .map( indexInLine => indexInLine -> 0.0 ) ;
                     return WBLine.apply(indexedLine -> 0.0) ;
-                } ; /* :def makeZeroLineBia: */
+                } ; /* :def makeZeroWBLine: */
                 
-                val makeLineBia
+                val makeWBLine
                 : (Int) => WBLine =
                     modeChoose match
                     {
-                        case Mode.RANDOM => makeRandomLineBia _
-                        case _ | Mode.ZERO => makeZeroLineBia _
-                    } ; /* :val makeLineBia: */
+                        case Mode.RANDOM => makeRandomWBLine _
+                        case _ | Mode.ZERO => makeZeroWBLine _
+                    } ; /* :val makeWBLine: */
                 
                 val netDataMade
                 : Seq[(Int,List[(Int,WBLine)])] =
@@ -194,10 +191,11 @@ package object simpledemo
                                 (1 to sizeLayer)
                                     .toList
                                     .map(
-                                        /* here need to be: one index -> one line-bia */ indexOfLine =>
-                                        {
-                                            indexOfLine -> makeLineBia( getLineSizeForLayer( indexOfLayer ) )
-                                        } )
+                                        /* here need to be: one index -> one line-bia */
+                                        indexOfLine =>
+                                            indexOfLine ->
+                                            makeWBLine( getLineSizeForLayer( indexOfLayer ) )
+                                        )
                             /* here need to be: one index -> one layer */
                         } ; /* :val netDataMade: */
                 return SimpleNeuralNet
@@ -217,13 +215,7 @@ package object simpledemo
             def relu (n:Double)
             : Double =
             {
-                return if ( n < 0 )
-                {
-                    0
-                } else
-                {
-                    n
-                };
+                return if ( n < 0 ) 0 else n ;
             } ; /* :def relu: */
         } ; /* :object SomeGift: */
         
@@ -286,11 +278,15 @@ package object simpledemo
                     : List[(Int,SimpleNeuralNet)] =
                         (1 to size)
                             .toList
-                            .map( modelIndex =>
-                                  {
-                                      modelIndex -> Maker.netMaker( netMakingMode )( sizeLineIn, sizeLineOut,
-                                                                                     sizesForHiddenLayer )
-                                  } ) ;
+                            .map(
+                                modelIndex =>
+                                    modelIndex ->
+                                    Maker.netMaker(
+                                        netMakingMode )(
+                                        sizeLineIn ,
+                                        sizeLineOut ,
+                                        sizesForHiddenLayer )
+                                ) ;
                     return ModelGroup.apply(modelListGot) ;
                 } ; /* :def groupMaker: */
             } ; /* :object ModelGroup: */
@@ -326,7 +322,9 @@ package object simpledemo
                  *    for everyone(have-index) in the group(List)
                  */
                 def invokeModel
-                ( groupedModels:ModelGroup, envFeatureTable:Environment.TabledData, envLabelTable:Environment.TabledData )
+                ( groupedModels:ModelGroup ,
+                  envFeatureTable:Environment.TabledData ,
+                  envLabelTable:Environment.TabledData )
                 : List[(Int,(Cost,OutLine))] =
                 {
                     val eventDatas
@@ -402,7 +400,7 @@ package object simpledemo
                             val sizeIn : Int = model.sizeIn ;
                             val sizeOut : Int = model.sizeOut ;
                             
-                            @tailrec
+                            @scala.annotation.tailrec
                             def layerIter
                             (beingLine: BeingLine, atIndexOfLayer: Int)
                             (numberOfHiddenLayer:Int)
@@ -608,12 +606,14 @@ package object simpledemo
                     csvFile
                         .getLines()
                         .toList
-                        .map( line =>
-                              {
-                                  line.split( "," )
-                                      .map( field => s"echo -e ${ field }"
-                                          .!! )
-                              } ) ;
+                        .map(
+                            line =>
+                                line.split( "," )
+                                    .map(
+                                        field =>
+                                            s"echo -e ${ field }".!!
+                                        )
+                            ) ;
                 
                 csvFile.close() ;
                 
