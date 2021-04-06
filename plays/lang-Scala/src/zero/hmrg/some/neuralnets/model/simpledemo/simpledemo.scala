@@ -51,10 +51,7 @@ package object simpledemo
     ( weightLineBiasedListSeq: Seq[(Int,List[(Int,SimpleNeuralNet.WBLine)])],
       sizeIn:Int, sizeOut:Int, sizesForHiddenLayer:Seq[Int] )
         extends Type.NeuralNet
-    {
-        lazy val getNumberOfHiddenLayer
-        : Int = weightLineBiasedListSeq.size - 1
-    } ; /* :case class SimpleNeuralNet: */
+    {  } ; /* :case class SimpleNeuralNet: */
     
     /**
      * one line is : many weights -- 1 bia
@@ -76,6 +73,7 @@ package object simpledemo
             {
                 return WBLine.apply(List(-1 -> -1.1) -> -1.1) ;
             } ;
+            
             def wbLineGetter
             (model:SimpleNeuralNet)
             (indexOfLayer:Int, indexOfWBLine:Int)
@@ -93,8 +91,8 @@ package object simpledemo
         object Layer
         {
             def layerSizeGetter
-            (model:SimpleNeuralNet)
-            (indexOfLayer:Int)
+            ( model: SimpleNeuralNet )
+            ( indexOfLayer: Int )
             :Int =
             {
                 val sizeOfNet
@@ -182,7 +180,7 @@ package object simpledemo
                 
                 val netDataMade
                 : Seq[(Int,List[(Int,WBLine)])] =
-                    ((1 to sizeForNet) zip sizesForLayer)
+                    ( (1 to sizeForNet) zip sizesForLayer )
                         .toSeq
                         .map
                         {
@@ -198,6 +196,7 @@ package object simpledemo
                                         )
                             /* here need to be: one index -> one layer */
                         } ; /* :val netDataMade: */
+                
                 return SimpleNeuralNet
                     .apply(
                         netDataMade,
@@ -254,8 +253,7 @@ package object simpledemo
                     .map
                     {
                         case (num1,num2) =>
-                            val x = num1 - num2 ;
-                            x * x ;
+                            val x = num1 - num2 ; x * x
                     } ;
             } ;
         } ; /* :object Operator: */
@@ -392,7 +390,7 @@ package object simpledemo
                         */
                         
                         def netLayersCalculator
-                        (model: SimpleNeuralNet , feature: Array[Double])
+                        ( model: SimpleNeuralNet , feature: Array[Double] )
                         : OutLine =
                         {
                             val sizesForLayers
@@ -402,23 +400,23 @@ package object simpledemo
                             
                             @scala.annotation.tailrec
                             def layerIter
-                            (beingLine: BeingLine, atIndexOfLayer: Int)
-                            (numberOfHiddenLayer:Int)
+                            ( beingLine: BeingLine, iterPassedCount: Int = 0 )
+                            ( numberOfHiddenLayer: Int )
                             : BeingLine =
                             {
                                 if
-                                (atIndexOfLayer > numberOfHiddenLayer)
+                                ( iterPassedCount > numberOfHiddenLayer )
                                 {
                                     return beingLine ;
                                 }
                                 else
                                 {
+                                    val atIndexOfLayer
+                                    : Int = iterPassedCount + 1 ;
+                                    
                                     val newBeingLineData
                                     : Array[Double] =
-                                        (1 to Layer
-                                            .layerSizeGetter(
-                                                model)(
-                                                atIndexOfLayer))
+                                        ( 1 to Layer.layerSizeGetter(model)(atIndexOfLayer) )
                                             .toList
                                             .map(
                                                 indexOfWBLine =>
@@ -439,8 +437,8 @@ package object simpledemo
                                             .toArray ;
                                     
                                     return layerIter(
-                                        BeingLine.apply(newBeingLineData),
-                                        atIndexOfLayer + 1)(
+                                        BeingLine.apply(newBeingLineData) ,
+                                        iterPassedCount + 1 )(
                                         numberOfHiddenLayer ) ;
                                 } ;
                             } ;
@@ -449,8 +447,8 @@ package object simpledemo
                             : BeingLine =
                                 layerIter(
                                     BeingLine.apply(feature) ,
-                                    atIndexOfLayer = 1 )(
-                                    model.getNumberOfHiddenLayer )
+                                    iterPassedCount = 0 )(
+                                    model.sizesForHiddenLayer.size )
                             
                             return OutLine.apply(theLastBeingLine.data) ;
                         } ; /* :def netLayersCalculator: */
@@ -467,18 +465,18 @@ package object simpledemo
                     val modelGroupResults
                     : List[(Int,(Cost,OutLine))] =
                         eventList
-                        .map(
-                            event =>
-                                groupedModels
-                                    .modelList
-                                    .map
-                                    {
-                                        case (indexOfModel,model) =>
-                                            indexOfModel ->
-                                            oneNetOneEvent(model, event)
-                                    }
-                            )
-                        .flatten ;
+                            .map(
+                                event =>
+                                    groupedModels
+                                        .modelList
+                                        .map
+                                        {
+                                            case (indexOfModel,model) =>
+                                                indexOfModel ->
+                                                oneNetOneEvent(model, event)
+                                        }
+                                )
+                            .flatten ;
                     return modelGroupResults ;
                 } ; /* :def invokeModel: */
                 
@@ -562,12 +560,12 @@ package object simpledemo
                     ( fields : Array[String] )
                     : Array[Double] =
                     {
-                        fields.map( _.toDouble )
-                    };
+                        return fields.map( _.toDouble ) ;
+                    } ;
                     
                     val eventListGot
                     : List[Event] =
-                        (byTabledDataFeature.body.zipWithIndex zip byTabledDataLabel.body.zipWithIndex )
+                        ( byTabledDataFeature.body.zipWithIndex zip byTabledDataLabel.body.zipWithIndex )
                             .toList
                             .map
                             {
@@ -593,7 +591,8 @@ package object simpledemo
                 
             } ;
             
-            def csvReader (path: String)
+            def csvReader
+            ( path: String )
             : Environment.TabledData =
             {
                 val csvFile
@@ -602,7 +601,7 @@ package object simpledemo
                 
                 import sys.process._ ;
                 val csvLineList
-                : List[Array[String]] =
+                : List[Array[String]] = 
                     csvFile
                         .getLines()
                         .toList
